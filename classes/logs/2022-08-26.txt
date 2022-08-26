@@ -1,3 +1,6 @@
+Time : 09:30:16
+SQLSTATE[HY000] [1049] Unknown database 'prepara2022'
+
 Time : 08:28:16
 SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
 Raw SQL : select distinct * from usuarios where usuario=:login and senha=:senha
