@@ -7,8 +7,13 @@
 	$db = new Db();
 	$util = new Util();
 	
-	global $login;
+	global $usuario;
 	global $senha;
+    
+    if(isset($_POST['usuario'])){$usuario = $_POST['usuario'];}else{$usuario = "";}
+    if(isset($_POST['senha'])){$senha = $_POST['senha'];}else{$senha = "v";}
+  
+    
 	
 	
 	//Usuário retornou ao login, com sessão aberta
@@ -20,18 +25,24 @@
 	//Login padrão
 	if (isset($_POST['ok']) == 'true') {
 		$util->msgbox('Usuário nao conectado!'); // só pra testar
+        $util->msgbox($usuario . " " . $senha);// só pra testar
 		
-		$db->bind("login",$login);
-		$db->bind("senha",base64_encode($_POST['senha']));
+		$db->bind("usuario",$usuario);
+		$db->bind("senha",base64_encode($senha));
         
-		$usuario     =  $db->row("select * from usuarios where usuario=:login and senha=:senha");
-		if(!empty($usuario)) {
+		$user     =  $db->row("select distinct * from usuarios where usuario=:login and senha=:senha");
+        
+        $util->msgbox($usuario . " " . $senha);// só pra testar
+        
+		if(!empty($user)) {
 			$util->msgbox('Usuário está no banco!'); // só pra testar
 
-            $_SESSION['id_usuario'] = $usuario['id_usuario'];
-            $_SESSION['usuario'] = $usuario['usuario'];
+            $_SESSION['id_usuario'] = $user['id_usuario'];
+            $_SESSION['usuario'] = $user['usuario'];
+            
 			
-			$util->redirecionamentopage('exibe_anos.php');
+			
+            $util->redirecionamentopage('exibe_anos.php');
 			
 		}else {
                     $util->msgbox("Login ou senha errado!");
