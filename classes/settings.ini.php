@@ -3,6 +3,6 @@
 host = localhost
 user = root
 password = ""
-dbname = prepara2022
+dbname = prepara2022v2
 
 
