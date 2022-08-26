@@ -1,3 +1,46 @@
+<?php
+ @session_start();
+
+	require_once('classes/Db.class.php');
+	require_once('classes/util.php');
+	
+	$db = new Db();
+	$util = new Util();
+	
+	global $login;
+	global $senha;
+	
+	
+	//Usuário retornou ao login, com sessão aberta
+	if(isset($_SESSION['id'])){
+			$_SESSION = array(); //elimina a sessão
+			$util->msgbox('Usuário já conectado!'); // só pra testar
+			$util->redirecionamentopage('index.php'); //recarrega a página
+          }
+	//Login padrão
+	if (isset($_POST['ok']) == 'true') {
+		$util->msgbox('Usuário nao conectado!'); // só pra testar
+		
+		$db->bind("login",$login);
+		$db->bind("senha",base64_encode($_POST['senha']));
+        
+		$usuario     =  $db->row("select * from usuarios where usuario=:login and senha=:senha");
+		if(!empty($usuario)) {
+			$util->msgbox('Usuário está no banco!'); // só pra testar
+
+            $_SESSION['id_usuario'] = $usuario['id_usuario'];
+            $_SESSION['usuario'] = $usuario['usuario'];
+			
+			$util->redirecionamentopage('exibe_anos.php');
+			
+		}else {
+                    $util->msgbox("Login ou senha errado!");
+                }
+		
+	}
+    
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -37,26 +80,28 @@
                         <!-- Nested Row within Card Body -->
                         <div class="row">
                             <div class="col-lg-6 d-none d-lg-block bg-login-image2">
-                            <img src="img/login.webp" width="400" height="400"></div>
+                            <img src="img/login.svg" width="500" height="400"></div>
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Bem-vindo ao Prepara!</h1>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" method="post" action="" id="form" name="form">
+                                        <input type="hidden" id="ok" name="ok" value="ok">
                                         <div class="form-group">
                                             <input type="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
+                                                id="login" name="login" aria-describedby="emailHelp"
+                                                placeholder="Informe o usuário" title="É necessário informar o usuário">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
+                                                id="senha" name="senha" placeholder="Informe a Senha" title="É necessário informar a Senha">
                                         </div>
                                          
-                                        <a href="index.html" class="btn btn-primary btn-user btn-block">
-                                            Login
-                                        </a> 
+                                         
+                                        <button id="botao" type="button" class="btn  btn-success btn-info btn-block" onClick="validar(document.form);">Entrar</button>
+
+                                             
                                     </form>
                                      
                                      
@@ -81,6 +126,22 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <script language="javascript">
+    function validar(formulario){
+     for(i=0;i<=formulario.length-1;i++){
+        if ((formulario[i].value=="")&&(formulario[i].title!="")){
+            if ((formulario[i].type!="button")&&(formulario[i].type!="submit")&&(formulario[i].type!="hidden")){
+                    alert(formulario[i].title);
+                    formulario[i].focus();
+                    return false;
+                }
+            }
+        }
+
+        formulario.ok.value='true';
+        formulario.submit();
+    }
+    </script>
 
 </body>
 
