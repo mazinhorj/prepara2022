@@ -35,8 +35,9 @@
          
         
 		if(!empty($user)) { 
-            $_SESSION['id_usuario'] = $user['id_usuario'];
+            $_SESSION['id_escola'] = $user['id_escola'];
             $_SESSION['usuario'] = $user['usuario'];
+			$_SESSION['nome_escola'] = $user['nome_escola'];
             
             $util->redirecionamentopage('exibe_anos.php');
 			
